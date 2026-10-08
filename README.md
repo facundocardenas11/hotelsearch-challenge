@@ -19,13 +19,16 @@ Java 21 · Spring Boot 3.5 · Spring Kafka · Spring JDBC (`JdbcClient`) · Orac
 
 ## Como levantarlo
 
-Solo hace falta **Docker** y **docker-compose**. La aplicacion se compila dentro de Docker.
+Solo hace falta **Docker** y **docker-compose**. La aplicacion se compila dentro de Docker. Se recomienda utilizar Docker Desktop y ejecutar el siguiente comando en la raiz del proyecto como administrador en powershell
 
 ```bash
 docker compose up --build
 ```
+![img.png](img.png)
 
 La primera vez tarda unos minutos (descarga de imagenes y arranque de Oracle). Cuando termina, la API queda en `http://localhost:8080`.
+
+En caso de no poder correr los comandos se recomienda instalar **WSL** si tenemos windows, nos permite utilizar terminal de tipo Linux y ejecutar los comandos de docker compose. En caso de no poder instalar WSL, se recomienda instalar **Git Bash** y ejecutar los comandos de docker compose.
 
 Para detener y borrar los datos:
 
@@ -57,7 +60,7 @@ Respuesta `200`:
 ### `GET /count?searchId=...`
 
 ```bash
-curl "http://localhost:8080/count?searchId=5d1c7e0a-0f3b-4b1e-9d52-2f6a8f7a9c11"
+curl "http://localhost:8080/count?searchId=5d1c7e0a-0f3b-4b1e-9d52-2f96a8f7ac11"
 ```
 
 Respuesta `200`:
