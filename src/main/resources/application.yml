@@ -12,6 +12,8 @@ spring:
     init:
       mode: always
   kafka:
+    listener:
+      concurrency: 3
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -19,6 +21,7 @@ spring:
       properties:
         spring.json.add.type.headers: false
     consumer:
+      max-poll-records: 500
       group-id: search-persister
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -27,3 +30,6 @@ spring:
         spring.json.value.default.type: com.sling.hotelsearch.infrastructure.kafka.SearchMessage
         spring.json.trusted.packages: com.sling.hotelsearch.infrastructure.kafka
         spring.json.use.type.headers: false
+    hikari:
+      pool:
+        maximum-pool-size: 20

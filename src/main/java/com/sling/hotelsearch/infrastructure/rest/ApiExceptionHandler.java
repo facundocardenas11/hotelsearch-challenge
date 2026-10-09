@@ -20,6 +20,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(InvalidSearchException.class)
     public ResponseEntity<ErrorResponse> handleInvalid(InvalidSearchException e) {
+        log.warn("REQUEST INVALIDO: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 

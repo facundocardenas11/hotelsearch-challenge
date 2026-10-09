@@ -9,13 +9,20 @@ import com.sling.hotelsearch.application.service.RegisterSearchService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+
 
 @Configuration
 public class BeanConfig {
 
     @Bean
-    public RegisterSearchUseCase registerSearchUseCase(SearchEventPublisher publisher) {
-        return new RegisterSearchService(publisher);
+    public Clock clock() {
+        return Clock.systemDefaultZone();
+    }
+
+    @Bean
+    public RegisterSearchUseCase registerSearchUseCase(SearchEventPublisher publisher, Clock clock) {
+        return new RegisterSearchService(publisher, clock);
     }
 
     @Bean

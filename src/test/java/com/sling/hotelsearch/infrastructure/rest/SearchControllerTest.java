@@ -49,7 +49,7 @@ class SearchControllerTest {
         when(registerSearch.register(any())).thenReturn("abc-123");
 
         mockMvc.perform(post("/search").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.searchId").value("abc-123"));
 
         verify(registerSearch).register(new HotelSearch(

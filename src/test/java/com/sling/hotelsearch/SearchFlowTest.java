@@ -1,5 +1,6 @@
 package com.sling.hotelsearch;
 
+import com.jayway.jsonpath.JsonPath;
 import com.sling.hotelsearch.infrastructure.kafka.KafkaTopics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -18,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Flujo completo: POST /search -> Kafka (PRUEBA embebido) -> consumer -> base (H2 en modo Oracle) -> GET /count.
+ * Flujo completo: POST /search -> Kafka (embebido) -> consumer -> base (H2 en modo Oracle) -> GET /count.
  */
 @SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:flowtest;MODE=Oracle;DB_CLOSE_DELAY=-1",
@@ -29,20 +32,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         bootstrapServersProperty = "spring.kafka.bootstrap-servers")
 class SearchFlowTest {
 
-    private static final String BODY = """
-            {"hotelId":"1234aBc","checkIn":"29/12/2023","checkOut":"31/12/2023","ages":%s}""";
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Autowired
     private MockMvc mockMvc;
 
+    private static String body(String ages) {
+        LocalDate in = LocalDate.now().plusDays(30);
+        return """
+                {"hotelId":"1234aBc","checkIn":"%s","checkOut":"%s","ages":%s}"""
+                .formatted(FMT.format(in), FMT.format(in.plusDays(2)), ages);
+    }
+
     private String registrar(String ages) throws Exception {
         String response = mockMvc.perform(post("/search")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(BODY.formatted(ages)))
-                .andExpect(status().isOk())
+                        .content(body(ages)))
+                .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
-        System.out.println("Response: " + response);
-        return com.jayway.jsonpath.JsonPath.read(response, "$.searchId");
+        return JsonPath.read(response, "$.searchId");
     }
 
     @Test

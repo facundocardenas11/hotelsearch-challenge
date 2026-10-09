@@ -51,7 +51,7 @@ curl -X POST http://localhost:8080/search \
   -d '{"hotelId":"1234aBc","checkIn":"29/12/2023","checkOut":"31/12/2023","ages":[30,29,1,3]}'
 ```
 
-Respuesta `200`:
+Respuesta `201`:
 
 ```json
 { "searchId": "5d1c7e0a-0f3b-4b1e-9d52-2f6a8f7a9c11" }
@@ -87,6 +87,7 @@ Respuesta `200`:
 | `/count` sin `searchId` | 400 | `searchId es obligatorio` |
 | `searchId` inexistente | 404 | `No existe una busqueda con searchId: ...` |
 | Kafka no disponible | 503 | `No se pudo registrar la busqueda, intente nuevamente` |
+| checkIn anterior a hoy | 400 | checkIn no puede ser una fecha pasada |
 
 ## Arquitectura (hexagonal)
 
